@@ -43,7 +43,11 @@ extern "C" {
   void stack_process(void);
 }
 
-#include "WProgram.h"
+#if defined(ARDUINO) && ARDUINO >= 100
+  #include "Arduino.h"
+  #else
+  #include "WProgram.h"
+#endif
 #include "WiShield.h"
 
 void WiShield::init()
@@ -51,7 +55,11 @@ void WiShield::init()
 	zg_init();
 
 #ifdef USE_DIG0_INTR
+#if 1
 	attachInterrupt(0, zg_isr, LOW);
+#else
+    attachInterrupt(4, zg_isr, LOW);
+#endif
 #endif
 
 #ifdef USE_DIG8_INTR

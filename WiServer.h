@@ -47,6 +47,7 @@ extern "C" {
 }
 
 #include "Print.h"
+#include "stdio.h"
 
 
 /*
@@ -195,7 +196,11 @@ class Server: public Print
 		/**
 		 * Writes a single byte to the current connection buffer
 		 */
-		virtual void write(uint8_t);
+		#if defined(ARDUINO) && ARDUINO >= 100
+		  virtual size_t write(uint8_t);
+		  #else
+		  virtual void write(uint8_t);
+		#endif
 
 		/**
 		 * Prints a string that is stored in program memory

@@ -30,6 +30,7 @@
   ---------------------------------------------------------------
    AsyncLabs			05/01/2009	Initial version
    AsyncLabs			05/29/2009	Adding support for new library
+   JiapengLi			06/29/2012  Adding support for Arduino Mega and Arduino Mega 2560
 
  *****************************************************************************/
 
@@ -44,10 +45,19 @@
 
 
 #ifdef USE_DIG0_INTR
+
+#if defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1280__)
+#define ZG2100_ISR_DISABLE()	(EIMSK &= ~(0x10))
+#define ZG2100_ISR_ENABLE()		(EIMSK |= 0x10)
+#define ZG2100_ISR_GET(X)		(X = EIMSK)
+#define ZG2100_ISR_SET(X)		(EIMSK = X)
+#else
 #define ZG2100_ISR_DISABLE()	(EIMSK &= ~(0x01))
 #define ZG2100_ISR_ENABLE()		(EIMSK |= 0x01)
 #define ZG2100_ISR_GET(X)		(X = EIMSK)
 #define ZG2100_ISR_SET(X)		(EIMSK = X)
+#endif
+
 #endif
 
 #ifdef USE_DIG8_INTR
@@ -71,6 +81,24 @@
 #define ZG2100_INTR						BIT0
 #endif
 
+/** modified by Lich*/
+#if defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1280__)
+#define SPI0_SS_BIT						BIT4
+#define SPI0_SS_DDR						DDRB
+#define SPI0_SS_PORT					PORTB
+
+#define SPI0_SCLK_BIT					BIT1
+#define SPI0_SCLK_DDR					DDRB
+#define SPI0_SCLK_PORT					PORTB
+
+#define	SPI0_MOSI_BIT					BIT2
+#define SPI0_MOSI_DDR					DDRB
+#define SPI0_MOSI_PORT					PORTB
+
+#define	SPI0_MISO_BIT					BIT3
+#define SPI0_MISO_DDR					DDRB
+#define SPI0_MISO_PORT					PORTB
+#else
 #define SPI0_SS_BIT						BIT2
 #define SPI0_SS_DDR						DDRB
 #define SPI0_SS_PORT					PORTB
@@ -86,7 +114,7 @@
 #define	SPI0_MISO_BIT					BIT4
 #define SPI0_MISO_DDR					DDRB
 #define SPI0_MISO_PORT					PORTB
-
+#endif
 
 #define SPI0_WaitForReceive()
 #define SPI0_RxData()	 				(SPDR)
@@ -105,11 +133,23 @@
 										SPCR  = 0x50;\
 										SPSR  = 0x01
 #else
+
+#if defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1280__)
+#define SPI0_Init()						DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT|LEDConn_BIT|BIT0;\
+										DDRB  &= ~SPI0_MISO_BIT;\
+										PORTB = SPI0_SS_BIT;\
+										SPCR  = 0x50;\
+										SPSR  = 0x01;
+
+#else
 #define SPI0_Init()						DDRB  |= SPI0_SS_BIT|SPI0_SCLK_BIT|SPI0_MOSI_BIT|LEDConn_BIT;\
 										DDRB  &= ~SPI0_MISO_BIT;\
 										PORTB = SPI0_SS_BIT;\
 										SPCR  = 0x50;\
 										SPSR  = 0x01
+				
+#endif		
+
 #endif
 
 //ZG2100 SPI HAL
@@ -118,17 +158,33 @@
 #define ZG2100_SpiRecvData				SPI0_RxData
 
 
+/** modified by Lich*/
+#if defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1280__)
+#define ZG2100_CS_BIT					BIT4
+#define ZG2100_CS_DDR					DDRB
+#define ZG2100_CS_PORT					PORTB
+#else
 #define ZG2100_CS_BIT					BIT2
 #define ZG2100_CS_DDR					DDRB
 #define ZG2100_CS_PORT					PORTB
+#endif
+
+
 
 #define ZG2100_CSInit()					(ZG2100_CS_DDR |= ZG2100_CS_BIT)
 #define ZG2100_CSon()					(ZG2100_CS_PORT |= ZG2100_CS_BIT)
 #define ZG2100_CSoff()					(ZG2100_CS_PORT &= ~ZG2100_CS_BIT)
 
+#if defined(__AVR_ATmega2560__) || defined(__AVR_ATmega1280__)
+#define LEDConn_BIT					BIT6
+#define LEDConn_DDR					DDRH
+#define LEDConn_PORT				PORTH
+#else
 #define LEDConn_BIT					BIT1
 #define LEDConn_DDR					DDRB
 #define LEDConn_PORT				PORTB
+#endif
+
 
 #define LED0_BIT					BIT0
 #define LED0_DDR					DDRC
