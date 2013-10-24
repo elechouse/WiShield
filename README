@@ -1,26 +1,11 @@
-WiShield library and TCP/IP stack files for the WiShield 1.0 wireless devices
+# WiShield
+This WiShield library is developed by [Async Labs](https://github.com/asynclabs/WiShield). 
+About four years ago(2009), Async Labs stop updating WiShield. 
 
-Async Labs Inc.
-www.asynclabs.com
+## Feature Added By Elechouse
 
--------------------------------------------------------------------------------
-Version 1.2.0
--------------------------------------------------------------------------------
-Changes:
-- Fixed buffer overflow issue
-- Added files for WiServer implementation
-- Removed stray debug prints from source code
-- Made sketches uniform to existing examples
-- Added missing implementation for setURL function
-- Adding support for using Digital pin 8 on Arduino as the interrupt pin for
-  WiShield
-- Added function for base64 encoding
-- Fixing IP address assignment macro
++ Support Arduino 1.0.1 IDE and after.
++ Support Arduion Mega and Arduino 2560.
 
-New features:
-- Adding sample SocketApp sketch to demonstrate using WiShield for socket
-  communication 
-- Adding UDPApp sketch to demonstarte use of UDP protocol for communication
-
-Known issues:
-None
+## Known issues:
+The firmware MRF24WB0MB(Produced after about 2012.06) seems to be updated, now the WiShield couldn't work with it. 
